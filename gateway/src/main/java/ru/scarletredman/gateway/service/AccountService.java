@@ -13,8 +13,11 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Mono<Account> register(String username, String password, String email) {
-        var account = new Account(username, password, email);
-        return accountRepository.save(account);
+        return Mono.just(new Account(username, password, email))
+                .zipWith(accountRepository.getFreeIdentifier(), (account, identifier) -> {
+                    account.setId(identifier);
+                    return account;
+                }).flatMap(accountRepository::save);
     }
 
     public Mono<Account> find(String username) {

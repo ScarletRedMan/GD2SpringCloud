@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import ru.scarletredman.gateway.model.Account;
 
 @Repository
-public interface AccountRepository extends ReactiveCrudRepository<Account, Long> {
+public interface AccountRepository extends ReactiveCrudRepository<Account, Long>, AccountIdentifierGenerator {
 
     Mono<Account> findAccountByLowerUsername(String lowerUsername);
 }
