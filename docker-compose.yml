@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  user-database:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dev
+      MONGO_INITDB_ROOT_PASSWORD: dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./appdata/user-database:/data/db"

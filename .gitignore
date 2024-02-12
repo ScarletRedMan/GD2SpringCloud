@@ -27,3 +27,4 @@ bin/
 /.nb-gradle/
 .vscode/
 .DS_Store
+appdata/
