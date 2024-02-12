@@ -1,2 +1,3 @@
 rootProject.name = 'GD2Spring'
 
+includeBuild "discovery"
