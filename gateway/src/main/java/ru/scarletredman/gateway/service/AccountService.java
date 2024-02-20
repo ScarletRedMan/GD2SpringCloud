@@ -18,7 +18,23 @@ public class AccountService {
 
     public Mono<Account> register(String username, String password, String email) {
         return Mono.just(new Account(username, password, email))
-                .zipWith(accountRepository.getFreeIdentifier(), (account, identifier) -> {
+                .doOnNext(account -> { // validating
+                    var usernameLen = account.getLowerUsername().length();
+                    if (!account.getUsername().matches("^[aA-zZ\\d]+$")) throw new RegisterException.InvalidUsername();
+                    if (usernameLen > 15) throw new RegisterException.UsernameIsTooLong();
+                    if (usernameLen < 3) throw new RegisterException.TooShortUsername();
+
+                    var passwordLen = password.length();
+                    if (!password.matches("^[aA-zZ\\d]+$")) throw new RegisterException.PasswordIsInvalid();
+                    if (passwordLen > 20) throw new RegisterException.PasswordIsTooLong();
+                    if (passwordLen < 6) throw new RegisterException.TooShortPassword();
+
+                    var mail = account.getEmail();
+                    if (mail.length() > 50) throw new RegisterException.EmailIsInvalid();
+                    if (!mail.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{1,10}$")) {
+                        throw new RegisterException.EmailIsInvalid();
+                    }
+                }).zipWith(accountRepository.getFreeIdentifier(), (account, identifier) -> {
                     account.setId(identifier);
                     return account;
                 }).flatMap(accountRepository::save)

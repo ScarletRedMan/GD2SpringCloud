@@ -32,6 +32,6 @@ public class Account {
         this.username = username;
         this.lowerUsername = username.toLowerCase();
         this.password = password;
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 }
