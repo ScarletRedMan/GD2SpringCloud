@@ -1,8 +1,9 @@
 package ru.scarletredman.gateway.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.scarletredman.gateway.controller.response.LoginResponse;
@@ -12,10 +13,9 @@ import ru.scarletredman.gateway.model.Account;
 import ru.scarletredman.gateway.repository.AccountRepository;
 import ru.scarletredman.gateway.security.GJP2;
 
-@Log4j2
 @RequiredArgsConstructor
 @Service
-public class AccountService {
+public class AccountService implements ReactiveUserDetailsService {
 
     private final AccountRepository accountRepository;
     private final GJP2 gjp2;
@@ -58,8 +58,15 @@ public class AccountService {
     }
 
     public Mono<Account> auth(String username, String gjp2) {
-        return accountRepository.findAccountByLowerUsername(username)
-                .singleOptional()
+        return auth(accountRepository.findAccountByLowerUsername(username), gjp2);
+    }
+
+    public Mono<Account> auth(long accountId, String gjp2) {
+        return auth(accountRepository.findById(accountId), gjp2);
+    }
+
+    private Mono<Account> auth(Mono<Account> accountMono, String gjp2) {
+        return accountMono.singleOptional()
                 .map(optional -> optional.orElseThrow(() -> new AuthException(LoginResponse.Reason.LOGIN_FAILED)))
                 .doOnNext(account -> {
                     if (account.isBanned()) {
@@ -74,5 +81,11 @@ public class AccountService {
 
     public Mono<Account> find(String username) {
         return accountRepository.findAccountByLowerUsername(username);
+    }
+
+    @Override
+    public Mono<UserDetails> findByUsername(String username) {
+        return accountRepository.findAccountByLowerUsername(username)
+                .map(account -> account);
     }
 }
