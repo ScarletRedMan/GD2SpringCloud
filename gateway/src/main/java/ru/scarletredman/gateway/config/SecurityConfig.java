@@ -5,9 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
+import ru.scarletredman.gateway.filter.DebugWebFilter;
 import ru.scarletredman.gateway.security.GdSecurityContextRepository;
 import ru.scarletredman.gateway.service.AccountService;
 
@@ -41,6 +43,8 @@ public class SecurityConfig {
                 .pathMatchers("/accounts/registerGJAccount.php").permitAll()
                 .anyExchange().authenticated()
         );
+
+        http.addFilterBefore(new DebugWebFilter(), SecurityWebFiltersOrder.AUTHORIZATION);
 
         return http.build();
     }
