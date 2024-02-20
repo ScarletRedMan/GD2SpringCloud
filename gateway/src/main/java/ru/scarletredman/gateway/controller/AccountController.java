@@ -9,15 +9,19 @@ import ru.scarletredman.gateway.controller.request.LoginRequest;
 import ru.scarletredman.gateway.controller.request.RegisterRequest;
 import ru.scarletredman.gateway.controller.response.LoginResponse;
 import ru.scarletredman.gateway.controller.response.RegisterResponse;
+import ru.scarletredman.gateway.service.AccountService;
 
 @Log4j2
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
 
+    private final AccountService accountService;
+
     @PostMapping(value = "/accounts/registerGJAccount.php", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     Mono<RegisterResponse> register(Mono<RegisterRequest> request) {
-        return Mono.just(RegisterResponse.EMAIL_IS_ALREADY_IN_USE);
+        return request.flatMap(r -> accountService.register(r.userName(), r.password(), r.email()))
+                .then(Mono.just(RegisterResponse.SUCCESS));
     }
 
     @PostMapping(value = "/accounts/loginGJAccount.php", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

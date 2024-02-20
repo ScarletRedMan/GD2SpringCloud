@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import ru.scarletredman.gateway.exception.RegisterException;
 import ru.scarletredman.gateway.model.Account;
 import ru.scarletredman.gateway.repository.AccountRepository;
+import ru.scarletredman.gateway.security.GJP2;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -15,9 +16,10 @@ import ru.scarletredman.gateway.repository.AccountRepository;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final GJP2 gjp2;
 
     public Mono<Account> register(String username, String password, String email) {
-        return Mono.just(new Account(username, password, email))
+        return Mono.just(new Account(username, gjp2.hash(password), email))
                 .doOnNext(account -> { // validating
                     var usernameLen = account.getLowerUsername().length();
                     if (!account.getUsername().matches("^[aA-zZ\\d]+$")) throw new RegisterException.InvalidUsername();
