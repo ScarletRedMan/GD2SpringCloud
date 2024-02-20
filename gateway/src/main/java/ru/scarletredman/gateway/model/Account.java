@@ -24,6 +24,8 @@ public class Account {
     @Indexed(unique = true)
     private String email;
 
+    private boolean banned = false;
+
     private String salt;
 
     public Account() {}

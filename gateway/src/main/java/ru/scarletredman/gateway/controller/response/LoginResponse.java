@@ -26,7 +26,7 @@ public class LoginResponse implements GeometryDashResponseSerializer.Response {
     public String getResponse() {
         if (accountId == -1) return Integer.toString(errorId);
 
-        return accountId + "." + accountId;
+        return accountId + "," + accountId;
     }
 
     public enum Reason {

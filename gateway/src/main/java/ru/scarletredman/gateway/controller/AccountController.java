@@ -26,6 +26,7 @@ public class AccountController {
 
     @PostMapping(value = "/accounts/loginGJAccount.php", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     Mono<LoginResponse> login(Mono<LoginRequest> request) {
-        return Mono.just(LoginResponse.error(LoginResponse.Reason.BANNED));
+        return request.flatMap(r -> accountService.auth(r.userName(), r.gjp2()))
+                .map(account -> LoginResponse.success(account.getId()));
     }
 }
