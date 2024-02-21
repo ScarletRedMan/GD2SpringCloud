@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .pathMatchers("/rest/**").permitAll()
                 .pathMatchers("/accounts/loginGJAccount.php").permitAll()
                 .pathMatchers("/accounts/registerGJAccount.php").permitAll()
+                .pathMatchers("/getAccountURL.php").permitAll()
                 .anyExchange().authenticated()
         );
 
