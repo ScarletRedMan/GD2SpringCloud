@@ -2,3 +2,4 @@ rootProject.name = 'GD2Spring'
 
 includeBuild "discovery"
 includeBuild "gateway"
+includeBuild "account-backups"
