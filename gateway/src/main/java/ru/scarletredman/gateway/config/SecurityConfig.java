@@ -39,6 +39,7 @@ public class SecurityConfig {
         http.securityContextRepository(new GdSecurityContextRepository(accountService));
 
         http.authorizeExchange(auth -> auth
+                .pathMatchers("/rest/**").permitAll()
                 .pathMatchers("/accounts/loginGJAccount.php").permitAll()
                 .pathMatchers("/accounts/registerGJAccount.php").permitAll()
                 .anyExchange().authenticated()
