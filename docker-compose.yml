@@ -23,3 +23,14 @@ services:
     environment:
       MINIO_ROOT_USER: dev
       MINIO_ROOT_PASSWORD: Qwerty123
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./appdata/postgres:/var/lib/postgresql/data"

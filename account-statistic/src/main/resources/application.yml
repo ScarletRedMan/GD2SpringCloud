@@ -2,6 +2,11 @@ spring:
   application:
     name: "account-statistic"
 
+  r2dbc:
+    url: "${GD2SPRING_POSTGRES_URL:r2dbc:postgresql://localhost:5432/dev}"
+    username: "${GD2SPRING_POSTGRES_USERNAME:dev}"
+    password: "${GD2SPRING_POSTGRES_PASSWORD:dev}"
+
 server:
   port: 0
 
